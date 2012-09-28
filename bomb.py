@@ -56,7 +56,6 @@ class Bomb:
         self._clock = Clock()
         self._w.add(self._clock)
         self._thread = SerialThread(port, self._got_data)
-        self._thread.start()
 
         self._start = time.mktime(time.strptime(time_start,"%H:%M:%S"))
         self._boom = time.mktime(time.strptime("00:00:00", "%H:%M:%S"))
@@ -65,6 +64,8 @@ class Bomb:
         self._RMIN = int(adc_min)
         self._RMAX = int(adc_max)
         self._oldval = 0
+
+        self._thread.start()
 
     def _scale_val(self, val):
         N = self._steps
