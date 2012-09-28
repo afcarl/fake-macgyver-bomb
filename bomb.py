@@ -52,7 +52,7 @@ class SerialThread(threading.Thread):
         self._ser.close()
 
 class Bomb:
-    def __init__(self, port='/dev/ttyACM0', adc_min=0, adc_max=1024, 
+    def __init__(self, port='/dev/ttyACM0', adc_min=460, adc_max=831, 
                         time_start="23:59:59", time_steps=66):
         self._w = Gtk.Window()
         self._w.connect("delete-event", self.quit)
