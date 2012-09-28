@@ -30,25 +30,29 @@ class Clock(Gtk.EventBox):
         return False
 
 class SerialThread(threading.Thread):
-    def __init__(self, cb):
+    def __init__(self, port, cb):
         threading.Thread.__init__(self, name="ardunio-thread")
         self._cb = cb
         self.daemon = True
 
+        self._ser = serial.Serial(port, 9600, timeout=1)
+        self._ser.open()
+
+        assert self._ser.isOpen()
+
     def run(self):
-        val = 59 #should be time.time
         while 1:
-            time.sleep(1.0)
-            self._cb(val)
-            val -= 1 #should be timedelta if serial val changes, blocking read
+            val = self._ser.readline()
+            self._cb(int(val) if val else 0)
+        self._ser.close()
 
 class Bomb:
-    def __init__(self, port='/dev/ttyUSB0'):
+    def __init__(self, port='/dev/ttyACM0'):
         self._w = Gtk.Window()
         self._w.connect("delete-event", self.quit)
         self._clock = Clock()
         self._w.add(self._clock)
-        self._thread = SerialThread(self._got_data)
+        self._thread = SerialThread(port, self._got_data)
         self._thread.start()
 
     def _got_data(self, val):
