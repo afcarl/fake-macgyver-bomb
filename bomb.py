@@ -45,7 +45,10 @@ class SerialThread(threading.Thread):
     def run(self):
         while 1:
             val = self._ser.readline()
-            self._cb(int(val) if val else 0)
+            try:
+                self._cb(int(val) if val else 0)
+            except:
+                pass
         self._ser.close()
 
 class Bomb:
